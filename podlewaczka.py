@@ -1,44 +1,49 @@
 import RPi.GPIO as GPIO
 import time
-
-WATER_POMP = 16 # GPIO 23
-VALVE_01 = 18 # GPIO 24
-MOISTURE_SENSOR_01 = 11  # GPIO17
-MOISTURE_SENSOR_02 = 13 #GPIO22
+# GPIO PINS
+WATER_POMP = 16                #GPIO23
+VALVES = {
+  'VALVE_01': 18               #GPIO24
+}
+MOISTURE_SENSORS = {
+  'MOISTURE_SENSOR_01': 11,    #GPIO17
+  'MOISTURE_SENSOR_02': 13     #GPIO22
+}
 # Set the GPIO numbering mode
 GPIO.setmode(GPIO.BOARD)
 # Set up each GPIO pin
-GPIO.setup(WATER_POMP, GPIO.OUT, initial=GPIO.LOW)
-GPIO.setup(VALVE_01, GPIO.OUT)
-GPIO.setup(MOISTURE_SENSOR_01, GPIO.IN)
-GPIO.setup(MOISTURE_SENSOR_02, GPIO.IN)
+GPIO.setup(WATER_POMP, GPIO.OUT, initial=GPIO.LOW) #So water pump will not start byitsefl
+for v_name, v_pin in VALVES.items():
+  GPIO.setup(v_name, GPIO.OUT)
+for s_name, s_pin in MOISTURE_SENSORS.items():
+  GPIO.setup(s_name, GPIO.IN)
 
-           
+def water_the_plant(sensor_name, sensor_pin):           
+  print(f"{sensor_name} detects DRY soil. Start punmping!!!")
+  if sensor_name == 'MOISTURE_SENSOR_02':
+      valve_name = 'VALVE_01'
+      valve_pin = VALVES[valve_name]
+      GPIO.output(valve_pin, GPIO.HIGH)  # Open the valve
+      print(f"{valve_name} opened.")
+  #GPIO.output(WATER_POMP, GPIO.HIGH)
+  while GPIO.input(sensor_pin) == GPIO.HIGH:
+    time.sleep(1)
+  #GPIO.output(WATER_POMP, GPIO.LOW)
+  if sensor_name == 'MOISTURE_SENSOR_02':
+      GPIO.output(valve_pin, GPIO.LOW)  # Close the valve
+      print(f"{valve_name} closed.")
+  print(f"{sensor_name} detects WET soil. Stopt punmping!!!")
+  
 try:
   while True:
-      if GPIO.input(MOISTURE_SENSOR_01) == GPIO.LOW:
-          #GPIO.output(WATER_POMP, GPIO.LOW)
-          print("Sensor 01 detects WET soil 🌱💧")
-          print("Water pomp start")
+    for sensor_name, sensor_pin in MOISTURE_SENSORS.items():
+      if GPIO.input(sensor_pin) == GPIO.HIGH:
+        water_the_plant(sensor_name, sensor_pin)
       else:
-          print("Sensor 01 detects DRY soil 🌵🔥")
-          #GPIO.output(WATER_POMP, GPIO.HIGH)
-          print("Water pomp stop")
-          #GPIO.output(VALVE_01, GPIO.LOW)
-          print("Valve 01 action")
-      if GPIO.input(MOISTURE_SENSOR_02) == GPIO.LOW:
-          print("Sensor 02 detects WET soil 🌱💧")
-          #GPIO.output(WATER_POMP, GPIO.LOW)
-          print("Water pomp start")
-      else:
-          print("Sensor 02 detects DRY soil 🌵🔥")
-          #GPIO.output(VALVE_01, GPIO.LOW)
-          print("Valve 01 action")
-          #GPIO.output(WATER_POMP, GPIO.HIGH)
-          print("Water pomp stop")
-      time.sleep(2)
-      print("Soil wet on all plants")
+        print(f"{sensor_name} detects WET soil. No water needed")
+    time.sleep(10)
 except KeyboardInterrupt:
-    print("Stopping...")
-    GPIO.cleanup()
-GPIO.cleanup()
+  print("Stopping...")
+  GPIO.cleanup()
+finally:
+  GPIO.cleanup()
