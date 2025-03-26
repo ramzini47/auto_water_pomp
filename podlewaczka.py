@@ -14,9 +14,9 @@ GPIO.setmode(GPIO.BOARD)
 # Set up each GPIO pin
 GPIO.setup(WATER_POMP, GPIO.OUT, initial=GPIO.LOW) #So water pump will not start byitsefl
 for v_name, v_pin in VALVES.items():
-  GPIO.setup(v_name, GPIO.OUT)
+  GPIO.setup(v_pin, GPIO.OUT)
 for s_name, s_pin in MOISTURE_SENSORS.items():
-  GPIO.setup(s_name, GPIO.IN)
+  GPIO.setup(s_pin, GPIO.IN)
 
 def water_the_plant(sensor_name, sensor_pin):           
   print(f"{sensor_name} detects DRY soil. Start punmping!!!")
