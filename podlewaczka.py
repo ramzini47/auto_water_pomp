@@ -6,7 +6,7 @@ import logging
 # Configure logging
 logging.basicConfig(
     filename='/home/pi/repo/auto_water_pomp/watering.log',
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
@@ -29,13 +29,13 @@ for s_name, s_pin in MOISTURE_SENSORS.items():
   GPIO.setup(s_pin, GPIO.IN)
 
 def water_the_plant(sensor_name, sensor_pin):           
-  print(f"{sensor_name} detects DRY soil. Start punmping!!!")
+  #print(f"{sensor_name} detects DRY soil. Start punmping!!!")
   logging.info(f"{sensor_name} detects DRY soil. Start punmping!!!")
   if sensor_name == 'MOISTURE_SENSOR_02':
       valve_name = 'VALVE_01'
       valve_pin = VALVES[valve_name]
       GPIO.output(valve_pin, GPIO.HIGH)  # Open the valve
-      print(f"{valve_name} opened.")
+      #print(f"{valve_name} opened.")
       logging.info(f"{valve_name} opened.")
   GPIO.output(WATER_POMP, GPIO.HIGH)
   while GPIO.input(sensor_pin) == GPIO.HIGH:
@@ -43,24 +43,28 @@ def water_the_plant(sensor_name, sensor_pin):
   GPIO.output(WATER_POMP, GPIO.LOW)
   if sensor_name == 'MOISTURE_SENSOR_02':
       GPIO.output(valve_pin, GPIO.LOW)  # Close the valve
-      print(f"{valve_name} closed.")
+      #print(f"{valve_name} closed.")
       logging.info(f"{valve_name} closed.")
-  print(f"{sensor_name} detects WET soil. Stopt punmping!!!")
+  #print(f"{sensor_name} detects WET soil. Stopt punmping!!!")
   logging.info(f"{sensor_name} detects WET soil. Stopt punmping!!!")
-  
-try:
-  while True:
-    for sensor_name, sensor_pin in MOISTURE_SENSORS.items():
-      if GPIO.input(sensor_pin) == GPIO.HIGH:
-        water_the_plant(sensor_name, sensor_pin)
-      else:
-        print(f"{sensor_name} detects WET soil. No water needed")
-        logging.info(f"{sensor_name} detects WET soil. No water needed")
-    time.sleep(10)
-except KeyboardInterrupt:
-  print("Stopping...")
-  GPIO.cleanup()
-except Exception as e:
-    logging.error("An error occurred: %s", e)
-finally:
-  GPIO.cleanup()
+
+def main():
+  try:
+    while True:
+      for sensor_name, sensor_pin in MOISTURE_SENSORS.items():
+        if GPIO.input(sensor_pin) == GPIO.HIGH:
+          water_the_plant(sensor_name, sensor_pin)
+        else:
+          #print(f"{sensor_name} detects WET soil. No water needed")
+          logging.info(f"{sensor_name} detects WET soil. No water needed")
+      #time.sleep(86400)
+  except KeyboardInterrupt:
+    print("Stopping...")
+    GPIO.cleanup()
+  except Exception as e:
+      logging.error("An error occurred: %s", e)
+  finally:
+    GPIO.cleanup()
+    
+if __name__ == "__main__":
+  main()
