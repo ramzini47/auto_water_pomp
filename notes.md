@@ -49,3 +49,5 @@ ___|~~~~~~~~|_____
     |____________
     |METAL PART|
 ```
+
+Unfornetury moisture sensor failed. Need some sothering to fix it
