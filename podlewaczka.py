@@ -37,10 +37,10 @@ def water_the_plant(sensor_name, sensor_pin):
       GPIO.output(valve_pin, GPIO.HIGH)  # Open the valve
       print(f"{valve_name} opened.")
       logging.info(f"{valve_name} opened.")
-  GPIO.output(WATER_POMP, GPIO.HIGH)
+  #GPIO.output(WATER_POMP, GPIO.HIGH)
   while GPIO.input(sensor_pin) == GPIO.HIGH:
     time.sleep(1)
-  GPIO.output(WATER_POMP, GPIO.LOW)
+  #GPIO.output(WATER_POMP, GPIO.LOW)
   if sensor_name == 'MOISTURE_SENSOR_02':
       GPIO.output(valve_pin, GPIO.LOW)  # Close the valve
       print(f"{valve_name} closed.")
