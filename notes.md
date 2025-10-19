@@ -1,3 +1,6 @@
+### Dioda
+GND to krotka noga w diodzie. Dłuzsza podlaczamy do rezystora a rezystor do GPIO pinu.
+
 #### Zasilacz zewnetrzny
 Bialy to prad w zsilczczu
 
