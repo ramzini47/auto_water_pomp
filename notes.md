@@ -7,6 +7,7 @@ Do sterowania pomka uzywajac modulu ULN2003 i zewnetrznego zasilania GND raspery
 sternownika i pompki musza miec wspolna mase. Czerwony kabel zasilania pomki podlaczamy
 do zewnetrzengo zasilania. Nie-czerwony kabel(GND) pompki bedzie podlaczony do sterniownika w A-D.
 GND rasperry pi, GND sterownika i GND zasilacza zewetrzenego nalezy polaczyc.
+VCC sterownika nalezy polaczyc z VCC zasilacza zewnetrznego(czerwony kabel).
 IN1-7 nalezy polaczyc z GPIO pinem raspery pi ktory bedziemy programowo wlaczac/wylaczac.
 
 #### Czujnik wilgotnosci
